@@ -89,7 +89,7 @@ ML_model = SGDClassifier(random_state=32, max_iter= 100, tol = 0);
 
 # Cross Validation for predicting training error
 #No of K = 3; 
-cross_val = Cross_validation(10, Train_X, Train_y, model= ML_model);
+cross_val = Cross_validation(2, Train_X, Train_y, model= ML_model);
 cross_val.fit()
 Train_pred_y = cross_val.predict(Train_X);
 print('Traning Accuracy is = ' + str(cross_val.score(Train_y, Train_pred_y) * 100) + '%')
@@ -100,6 +100,6 @@ test_accuracy = sum(Test_pred_y == Test_y);
 print('Generalization Accuracy = ' + str(test_accuracy/len(Test_pred_y) * 100)+ '%');
  
 #Confusion Matrix 
-conf_mat = confusion_matrix(Train_y, Train_pred_y)
+conf_mat = confusion_matrix(Test_y, Test_pred_y)
 print('****************Confusion Matrix*******************')
 print(conf_mat)
