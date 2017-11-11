@@ -21,10 +21,12 @@ class Cross_validation():
         self.model = model; 
         self.skfold = StratifiedKFold(n_splits= self.folds, random_state= 43); 
         return; 
-    # Method to predict the class of the data
-    def predict(self):
-        pred_y= 0; 
-        desired_y=0;
+        
+    # Method to model the model with the best set of inputs from k set of inputs
+    def fit(self):
+        coeff = 0; 
+        new_score = 0;
+        old_score = 0; 
         for train_index, test_index in self.skfold.split(self.X, self.y):
            Train_x = self.X[train_index]; 
            Test_x = self.X[test_index]; 
@@ -32,19 +34,29 @@ class Cross_validation():
            Test_y  = self.y[test_index];
            
            self.model.fit(Train_x, Train_y); 
-           pred_y = np.append(pred_y, self.model.predict(Test_x));
-           desired_y = np.append(desired_y, Test_y);
-        return pred_y[1:], desired_y[1:]; 
+           pred_y = self.predict(Test_x);
+           new_score = self.score(Test_y, pred_y); 
+           print('Model Accuracy = '+str(new_score)); 
+           
+           #if the new model is not as good as the old one 
+           if(old_score < new_score):
+               #storing old coefficients to roll back to the best model
+               coeff = self.model.coef_;
+               old_score = new_score;
+               
+        self.model.coef_ = coeff;
+        return; 
+    
+    # Method to predict the class of the data
+    def predict(self,Test_x):  
+        pred_y = self.model.predict(Test_x);
+        return pred_y; 
+    
     # Method to print the Permonace of the Model 
-    def score(self):
-        pred_y, desired_y = self.predict(); 
-        
-        for i in range(0, self.folds):
-            start_pos = i*(len(pred_y)//self.folds); 
-            end_pos = (i+1)*(len(pred_y)//self.folds);
-            ncorrect = sum(pred_y[start_pos:end_pos] == desired_y[start_pos:end_pos]);
-            print('Accuracy is = '+ str(ncorrect/ len(pred_y[start_pos:end_pos])))
-        return 
+    def score(self, desired_y, pred_y):
+        ncorrect = sum(pred_y == desired_y);
+        score = ncorrect/ len(pred_y);
+        return score;
     
 dataset = fetch_mldata('MNIST original', data_home= 'A:/Dropbox/Jigar/SJSU_Data/EE258/Datasets/Mnist')
 
@@ -73,14 +85,21 @@ reviced_index = np.random.permutation(Train_X.shape[0])
 Train_X, Train_y = Train_X[reviced_index], Train_y[reviced_index]
 
 #Training the Model with the SGD Classifier 
-SGD_model = SGDClassifier(random_state=32, max_iter= 100, tol = 0); 
-#SGD_model.fit(Train_X, Train_y); 
+ML_model = SGDClassifier(random_state=32, max_iter= 100, tol = 0); 
 
-# Cross Validation 
+# Cross Validation for predicting training error
 #No of K = 3; 
-cross_val = Cross_validation(3, Train_X, Train_y, model= SGD_model);
-cross_val.score()
+cross_val = Cross_validation(10, Train_X, Train_y, model= ML_model);
+cross_val.fit()
+Train_pred_y = cross_val.predict(Train_X);
+print('Traning Accuracy is = ' + str(cross_val.score(Train_y, Train_pred_y) * 100) + '%')
 
+# Test Error calculation 
+Test_pred_y = ML_model.predict(Test_X);
+test_accuracy = sum(Test_pred_y == Test_y); 
+print('Generalization Accuracy = ' + str(test_accuracy/len(Test_pred_y) * 100)+ '%');
+ 
 #Confusion Matrix 
-x, y = cross_val.predict();
-cof_mat = confusion_matrix(y, x)
+conf_mat = confusion_matrix(Train_y, Train_pred_y)
+print('****************Confusion Matrix*******************')
+print(conf_mat)
