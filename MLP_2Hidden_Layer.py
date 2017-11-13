@@ -41,13 +41,17 @@ ML_model.fit(Train_X, Train_y);
 # Cross Validation for predicting training error
 #No of K = 10; 
 score = cross_val_score(ML_model, Train_X, Train_y, cv= 3)
-print('Traning Accuracy is = ' + str(score.mean() * 100) + '%')
+training_accuracy = score.mean() * 100;
+print('Traning Accuracy is = ' + str(training_accuracy) + '%')
 
 # Test Error calculation 
 Test_pred_y = ML_model.predict(Test_X);
-test_accuracy = sum(Test_pred_y == Test_y); 
-print('Generalization Accuracy = ' + str(test_accuracy/len(Test_pred_y) * 100)+ '%');
- 
+test_accuracy = (sum(Test_pred_y == Test_y)/ len(Test_pred_y))*100; 
+print('Generalization Accuracy = ' + str(test_accuracy)+ '%');
+
+#computing loss
+print('Cost = ' + str(ML_model.loss_));
+    
 #Confusion Matrix 
 conf_mat = confusion_matrix(Test_y, Test_pred_y)
 print('****************Confusion Matrix*******************')

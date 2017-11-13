@@ -58,7 +58,7 @@ class Cross_validation():
         score = ncorrect/ len(pred_y);
         return score;
     
-dataset = fetch_mldata('MNIST original', data_home= 'A:/Dropbox/Jigar/SJSU_Data/EE258/Datasets/Mnist')
+dataset = fetch_mldata('MNIST original');
 
 #Importing the Data from the dataset 
 X = dataset["data"];
@@ -72,8 +72,8 @@ plt.show()
 print(y[element_num])              #Printing the label associated with the prinnted image 
 
 #Separating the trainig and test data 
-Train_X = X[:60000]; 
-Train_y = y[:60000];
+Train_X = X[:36000]; 
+Train_y = y[:36000];
 Test_X  = X[60000:]; 
 Test_y  = y[60000:]; 
 

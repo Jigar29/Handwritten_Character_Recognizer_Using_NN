@@ -31,23 +31,29 @@ Test_y  = y[60000:];
 reviced_index = np.random.permutation(Train_X.shape[0])
 Train_X, Train_y = Train_X[reviced_index], Train_y[reviced_index]
 
-#Training the Model with the MLP Classifier with one hidden layer fully connected 
-ML_model = MLPClassifier(alpha=1e-5, learning_rate_init=0.001, max_iter= 800, hidden_layer_sizes=(200, ), activation='logistic', early_stopping= True, random_state=1);
+
+ML_model = MLPClassifier(alpha=1e-5, learning_rate_init=0.001, hidden_layer_sizes=(200, ), activation='logistic', early_stopping= True, random_state=1);
+
 ML_model.n_layers_ = 2;
 ML_model.n_outputs_ = 10;
+
 
 ML_model.fit(Train_X, Train_y);                    
 
 # Cross Validation for predicting training error
-#No of K = 10; 
+#No of K = 3; 
 score = cross_val_score(ML_model, Train_X, Train_y, cv= 3)
-print('Traning Accuracy is = ' + str(score.mean() * 100) + '%')
+training_accuracy = score.mean() * 100;
+print('Traning Accuracy is = ' + str(training_accuracy) + '%')
 
 # Test Error calculation 
 Test_pred_y = ML_model.predict(Test_X);
-test_accuracy = sum(Test_pred_y == Test_y); 
-print('Generalization Accuracy = ' + str(test_accuracy/len(Test_pred_y) * 100)+ '%');
- 
+test_accuracy = (sum(Test_pred_y == Test_y)/ len(Test_pred_y))*100; 
+print('Generalization Accuracy = ' + str(test_accuracy)+ '%');
+
+#computing loss
+print('Cost = ' + str(ML_model.loss_));
+    
 #Confusion Matrix 
 conf_mat = confusion_matrix(Test_y, Test_pred_y)
 print('****************Confusion Matrix*******************')

@@ -2,11 +2,10 @@ from sklearn.datasets.mldata import fetch_mldata
 from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt 
 import numpy as np
-from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import cross_val_score, cross_val_predict
+from sklearn.model_selection import cross_val_score
     
-dataset = fetch_mldata('MNIST original', data_home= 'A:/Dropbox/Jigar/SJSU_Data/EE258/Datasets/Mnist')
+dataset = fetch_mldata('MNIST original');
 
 #Importing the Data from the dataset 
 X = dataset["data"];
@@ -20,8 +19,8 @@ plt.show()
 print(y[element_num])              #Printing the label associated with the prinnted image 
 
 #Separating the trainig and test data 
-Train_X = X[:60000]; 
-Train_y = y[:60000];
+Train_X = X[:36000]; 
+Train_y = y[:36000];
 Test_X  = X[60000:]; 
 Test_y  = y[60000:]; 
 
@@ -37,7 +36,7 @@ ML_model = RandomForestClassifier(n_estimators=10, random_state= 43);
 ML_model.fit(Train_X, Train_y);
 
 # Cross Validation for predicting training error
-#No of K = 10; 
+#No of K = 3; 
 score = cross_val_score(ML_model, Train_X, Train_y, cv= 3)
 print('Traning Accuracy is = ' + str(score.mean() * 100) + '%')
 

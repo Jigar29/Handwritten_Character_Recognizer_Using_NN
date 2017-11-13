@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import cross_val_score
 
-dataset = fetch_mldata('MNIST original', data_home= 'A:/Dropbox/Jigar/SJSU_Data/EE258/Datasets/Mnist')
+dataset = fetch_mldata('MNIST original');
 
 #Importing the Data from the dataset 
 X = dataset["data"];
